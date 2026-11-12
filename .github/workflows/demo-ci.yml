@@ -1,0 +1,31 @@
+name: Demo CI
+
+# マージキューの merge_group と通常の pull_request の両方で動かす。
+# 必須チェック名は demo-ci。
+on:
+  pull_request:
+    branches: [ main ]
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  demo-ci:
+    name: demo-ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Show trigger context
+        run: |
+          echo "event=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "sha=${{ github.sha }}"
+
+      - name: Python syntax check
+        run: python -m compileall -q .
